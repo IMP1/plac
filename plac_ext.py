@@ -3,7 +3,6 @@ from __future__ import with_statement
 from contextlib import contextmanager
 from operator import attrgetter
 from gettext import gettext as _
-import imp
 import inspect
 import os
 import sys
@@ -17,6 +16,20 @@ import multiprocessing
 import signal
 import threading
 import plac_core
+
+version = sys.version_info[:2]
+
+if version < (3, 5):
+    from imp import load_source
+else:
+    import importlib.util
+
+    def load_source(dotname, path):
+        spec = importlib.util.spec_from_file_location(dotname, path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod
+
 
 if sys.version < '3':
     def exec_(_code_, _globs_=None, _locs_=None):
@@ -336,7 +349,7 @@ def import_main(path, *args):
     else:
         fullpath = path
     name, ext = os.path.splitext(os.path.basename(fullpath))
-    module = imp.load_module(name, open(fullpath), fullpath, (ext, 'U', 1))
+    module = load_source(name, fullpath)
     if factory_name:
         tool = partial_call(getattr(module, factory_name), args)
     else:
