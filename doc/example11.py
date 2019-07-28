@@ -1,13 +1,12 @@
 # example11.py
-import plac
-from annotations import Positional
+from plac import arg, call
 
-@plac.annotations(
-    i=Positional("This is an int", int),
-    n=Positional("This is a float", float),
-    rest=Positional("Other arguments"))
-def main(i, n, *rest):
+
+def main(i: arg("This is an int", type=int),
+         n: arg("This is a float", type=float),
+         *rest: "Other arguments"):
     print(i, n, rest)
 
+
 if __name__ == '__main__':
-    import plac; plac.call(main)
+    call(main)

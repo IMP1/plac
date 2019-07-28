@@ -1,9 +1,13 @@
 # example9.py
+from plac import arg, flg, call
 
-def main(verbose: ('prints more info', 'flag', 'v'), dsn: 'connection string'):
+
+def main(verbose: flg('prints more info'),
+         dsn: arg('connection string')):
     if verbose:
         print('connecting to %s' % dsn)
     # ...
 
+
 if __name__ == '__main__':
-    import plac; plac.call(main)
+    call(main)

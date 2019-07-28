@@ -3,6 +3,7 @@ def main(dsn):
     "Do something with the database"
     print("ok")
 
+
 if __name__ == '__main__':
     import sys
     n = len(sys.argv[1:])

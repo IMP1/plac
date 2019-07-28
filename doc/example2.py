@@ -4,6 +4,7 @@ def main(dsn):
     print(dsn)
     # ...
 
+
 if __name__ == '__main__':
     import argparse
     p = argparse.ArgumentParser()

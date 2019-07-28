@@ -118,6 +118,7 @@ def pconf(obj):
             cfg[name] = getattr(obj, name)
     return cfg
 
+
 _parser_registry = {}
 
 
@@ -329,6 +330,18 @@ class ArgumentParser(argparse.ArgumentParser):
 def iterable(obj):
     "Any object with an __iter__ method which is not a string"
     return hasattr(obj, '__iter__') and not isinstance(obj, (str, bytes))
+
+
+def arg(help, abbrev=None, type=None, choices=None, metavar=None):
+    return Annotation(help, 'positional', abbrev, type, choices, metavar)
+
+
+def opt(help, abbrev=None, type=None, choices=None, metavar=None):
+    return Annotation(help, 'option', abbrev, type, choices, metavar)
+
+
+def flg(help, abbrev=None, type=None, choices=None, metavar=None):
+    return Annotation(help, 'flag', abbrev, type, choices, metavar)
 
 
 def call(obj, arglist=None, eager=True, version=None):
