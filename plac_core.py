@@ -84,7 +84,7 @@ def is_annotation(obj):
 class Annotation(object):
     def __init__(self, help=None, kind="positional", abbrev=None, type=None,
                  choices=None, metavar=None):
-        assert kind in ('positional', 'option', 'flag'), kind
+        assert kind in ('positional', 'option', 'flag', 'multi'), kind
         if kind == "positional":
             assert abbrev is None, abbrev
         self.help = help
@@ -297,7 +297,7 @@ class ArgumentParser(argparse.ArgumentParser):
                         a.type = type(default)
                 if not metavar and default == '':
                     metavar = "''"
-            if a.kind in ('option', 'flag'):
+            if a.kind in ('option', 'flag', 'multi'):
                 if a.abbrev:
                     shortlong = (prefix + a.abbrev,
                                  prefix*2 + name.replace('_', '-'))
@@ -321,6 +321,12 @@ class ArgumentParser(argparse.ArgumentParser):
                     raise TypeError(_('Flag %r wants default False, got %r') %
                                     (name, default))
                 self.add_argument(action='store_true', help=a.help, *shortlong)
+            elif a.kind == 'multi':
+                if default is not NONE:
+                    metavar = metavar or str(default)
+                self.add_argument(
+                    help=a.help, default=dflt, type=a.type,
+                    choices=a.choices, metavar=metavar, action="append", *shortlong)
         if f.varargs:
             a = Annotation.from_(f.annotations.get(f.varargs, ()))
             self.add_argument(f.varargs, nargs='*', help=a.help, default=[],
